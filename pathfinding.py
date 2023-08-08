@@ -4,6 +4,7 @@ from collections import deque
 from settings import *
 from cell import Cell
 from bfs import BFS
+from dfs import DFS
 
 class Game:
     def __init__(self):
@@ -13,7 +14,7 @@ class Game:
         self.restart()
 
     def restart(self):
-        self.BFS = None
+        self.algorithm = None
         self.start_point = False
         self.end_point = False
         self.start = None
@@ -46,10 +47,17 @@ class Game:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     self.restart()
-                elif event.key == pygame.K_SPACE:
+                elif event.key == pygame.K_1:
                     self.clean_grid()
                     self.find_start()
-                    self.BFS = BFS(self.grid_cells, self.start)
+                    self.algorithm = BFS(self.grid_cells, self.start)
+                elif event.key == pygame.K_2:
+                    self.clean_grid()
+                    self.find_start()
+                    self.algorithm = DFS(self.grid_cells, self.start)
+                elif event.key == pygame.K_SPACE:
+                    self.clean_grid()
+                    self.algorithm = None
     
     def define_endpoints(self):
         if self.start_point == False and self.grid_cells[0][0].state != State.FINISH:
@@ -113,8 +121,8 @@ class Game:
     def run(self):
         while True:
             self.check_events()
-            if self.BFS != None:
-                self.BFS.update(self.screen)
+            if self.algorithm != None:
+                self.algorithm.update(self.screen)
             else:
                 self.draw()
             self.update()
