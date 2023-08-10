@@ -1,6 +1,7 @@
 import pygame
 import sys
 from collections import deque
+from random import randint
 from settings import *
 from cell import Cell
 from bfs import BFS
@@ -19,22 +20,24 @@ class Game:
         self.end_point = False
         self.start = None
         self.grid_cells = [[Cell(col, row, self) for row in range(ROWS)] for col in range(COLS)]
-        #self.grid_cells = [[0]*COLS]*ROWS
-        #for row in range(ROWS):
-        #    for col in range(COLS):
-        #        self.grid_cells[row][col] = Cell(col, row, self)
         
     def draw(self):
         self.screen.fill(pygame.Color('black'))
         [[cell.update(self.screen) for cell in row] for row in self.grid_cells]
-        """ for row in self.grid_cells:
-            for cell in row:
-                cell.update(self.screen)"""
         
     def clean_grid(self):
         for row in self.grid_cells:
             for cell in row:
                 if cell.state == State.VISITED or cell.state == State.PATH:
+                    cell.state = State.UNVISITED
+        
+    def random_seed(self):
+      
+        for row in self.grid_cells:
+            for cell in row:
+                if randint(0, 100) % 3 == 0:
+                    cell.state = State.WALL
+                else:
                     cell.state = State.UNVISITED
         
     def check_events(self):
@@ -55,6 +58,9 @@ class Game:
                     self.clean_grid()
                     self.find_start()
                     self.algorithm = DFS(self.grid_cells, self.start)
+                elif event.key == pygame.K_0:
+                    self.random_seed()
+                    self.algorithm = None
                 elif event.key == pygame.K_SPACE:
                     self.clean_grid()
                     self.algorithm = None

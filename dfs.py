@@ -30,8 +30,7 @@ class DFS:
     def DFS(self):
          
         self.next_cell = self.check_neighbours(self.current_cell)
-        print('this ---------------------------------------->')
-        print(self.next_cell)
+        
         if self.next_cell and self.next_cell.state == State.FINISH:
             for cell in self.stack:
                 cell.state = State.PATH
