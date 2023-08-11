@@ -10,6 +10,7 @@ class BFS:
         self.queue = deque()
         self.queue.append(self.start_node)
         self.previous_nodes = {}
+        self.not_found = True
     
     def append_neighbours(self, curr):
         if curr.x - 1 >= 0:
@@ -36,6 +37,7 @@ class BFS:
              if curr.state == State.FINISH:
                  self.backtrack(curr)
                  self.queue = deque()
+                 self.not_found = False
              elif curr.state == State.UNVISITED:
                  curr.state = State.VISITED
                  self.append_neighbours(curr)
@@ -46,12 +48,14 @@ class BFS:
         if node == self.start_node or node not in self.previous_nodes:
             return
         prev_node = self.previous_nodes[node]
-        prev_node.state = State.PATH
+        if prev_node.state != State.START:
+            prev_node.state = State.PATH
         self.backtrack(prev_node)
         
              
     def update(self, screen):
-        self.BFS()
+        if self.not_found:
+            self.BFS()
         
         for row in self.graph:
             for cell in row:

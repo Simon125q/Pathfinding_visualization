@@ -6,6 +6,7 @@ from settings import *
 from cell import Cell
 from bfs import BFS
 from dfs import DFS
+from mesagge import message
 
 class Game:
     def __init__(self):
@@ -16,6 +17,7 @@ class Game:
 
     def restart(self):
         self.algorithm = None
+        self.algorithm_name = ''
         self.start_point = False
         self.end_point = False
         self.start = None
@@ -26,13 +28,17 @@ class Game:
         [[cell.update(self.screen) for cell in row] for row in self.grid_cells]
         
     def clean_grid(self):
+        self.algorithm_name = ''
         for row in self.grid_cells:
             for cell in row:
                 if cell.state == State.VISITED or cell.state == State.PATH:
                     cell.state = State.UNVISITED
         
     def random_seed(self):
-      
+        self.algorithm_name = ''
+        self.start_point = False
+        self.end_point = False
+        self.start = None
         for row in self.grid_cells:
             for cell in row:
                 if randint(0, 100) % 3 == 0:
@@ -54,10 +60,12 @@ class Game:
                     self.clean_grid()
                     self.find_start()
                     self.algorithm = BFS(self.grid_cells, self.start)
+                    self.algorithm_name = 'BFS'
                 elif event.key == pygame.K_2:
                     self.clean_grid()
                     self.find_start()
                     self.algorithm = DFS(self.grid_cells, self.start)
+                    self.algorithm_name = 'DFS'
                 elif event.key == pygame.K_0:
                     self.random_seed()
                     self.algorithm = None
@@ -86,38 +94,6 @@ class Game:
                 if cell.state == State.START:
                     self.start = cell
                     return
-    
-    def BFSw(self):
-        self.find_start()
-        self.clean_grid()
-        queue = deque()
-        queue.append(self.start)
-        
-        while queue:
-            curr = queue.popleft()
-            if curr.state == State.FINISH:
-                break
-            elif curr.state == State.UNVISITED:
-                curr.state = State.VISITED
-                if curr.x - 1 >= 0:
-                    queue.append(self.grid_cells[curr.x - 1][curr.y])
-                if curr.y - 1 >= 0:
-                    queue.append(self.grid_cells[curr.x][curr.y - 1])  
-                if curr.x + 1 < COLS:
-                    queue.append(self.grid_cells[curr.x + 1][curr.y])    
-                if curr.y + 1 < ROWS:
-                    queue.append(self.grid_cells[curr.x][curr.y + 1])
-            elif curr.state == State.START:
-                if curr.x - 1 >= 0:
-                    queue.append(self.grid_cells[curr.x - 1][curr.y])
-                if curr.y - 1 >= 0:
-                    queue.append(self.grid_cells[curr.x][curr.y - 1])  
-                if curr.x + 1 < COLS:
-                    queue.append(self.grid_cells[curr.x + 1][curr.y])    
-                if curr.y + 1 < ROWS:
-                    queue.append(self.grid_cells[curr.x][curr.y + 1])
-                
-            self.update()
             
     def update(self):
         pygame.display.flip()
@@ -131,6 +107,7 @@ class Game:
                 self.algorithm.update(self.screen)
             else:
                 self.draw()
+            message(self.algorithm_name)
             self.update()
         
 

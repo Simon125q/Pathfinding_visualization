@@ -9,6 +9,7 @@ class DFS:
         self.stack = []
         self.path = []
         self.current_cell = self.start_node
+        self.not_found = True
         
     def check_neighbours(self, curr):
         neighbours = []
@@ -32,18 +33,22 @@ class DFS:
         self.next_cell = self.check_neighbours(self.current_cell)
         
         if self.next_cell and self.next_cell.state == State.FINISH:
+            self.stack.append(self.current_cell)
             for cell in self.stack:
-                cell.state = State.PATH
+                if cell.state not in [State.FINISH, State.START]:
+                    cell.state = State.PATH
+            self.not_found = False
         elif self.next_cell:
-            self.next_cell.state = State.PATH
-            self.stack.append(self.next_cell)
+            self.next_cell.state = State.VISITED
+            self.stack.append(self.current_cell)
             self.current_cell = self.next_cell
         elif self.stack:
             self.current_cell = self.stack.pop()
             self.current_cell.state = State.VISITED
             
     def update(self, screen):
-        self.DFS()
+        if self.not_found:
+            self.DFS()
         
         for row in self.graph:
             for cell in row:

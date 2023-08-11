@@ -14,3 +14,4 @@ class State(Enum):
     WALL = 'red'
     VISITED = 'blue'
     PATH = 'yellow'
+    TEST = 'brown'
