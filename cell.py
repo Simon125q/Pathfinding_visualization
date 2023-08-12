@@ -12,6 +12,9 @@ class Cell:
         self.can_click = True
         self.game = game
         
+    def __str__(self):
+        return f"{self.state} cell at {self.x}, {self.y}"
+    
     def draw(self, screen):
 
             pygame.draw.rect(screen, self.state.value, self.rect, border_radius = 7)

@@ -6,6 +6,7 @@ from settings import *
 from cell import Cell
 from bfs import BFS
 from dfs import DFS
+from a_star import A_Star
 from mesagge import message
 
 class Game:
@@ -21,6 +22,7 @@ class Game:
         self.start_point = False
         self.end_point = False
         self.start = None
+        self.end = None
         self.grid_cells = [[Cell(col, row, self) for row in range(ROWS)] for col in range(COLS)]
         
     def draw(self):
@@ -47,7 +49,6 @@ class Game:
                     cell.state = State.UNVISITED
         
     def check_events(self):
-        
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -66,6 +67,12 @@ class Game:
                     self.find_start()
                     self.algorithm = DFS(self.grid_cells, self.start)
                     self.algorithm_name = 'DFS'
+                elif event.key == pygame.K_3:
+                    self.clean_grid()
+                    self.find_start()
+                    self.find_end()
+                    self.algorithm = A_Star(self.grid_cells, self.start, self.end)
+                    self.algorithm_name = 'A Star'
                 elif event.key == pygame.K_0:
                     self.random_seed()
                     self.algorithm = None
@@ -93,6 +100,14 @@ class Game:
             for cell in row:
                 if cell.state == State.START:
                     self.start = cell
+                    return
+                
+    def find_end(self):
+        self.define_endpoints()
+        for row in self.grid_cells:
+            for cell in row:
+                if cell.state == State.FINISH:
+                    self.end = cell
                     return
             
     def update(self):
